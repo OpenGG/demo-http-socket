@@ -24,6 +24,8 @@ const send = async (id) => {
       },
       onClose() {
         log('onClose')
+
+        close()
       },
     })
 
@@ -31,7 +33,6 @@ const send = async (id) => {
     to.unref()
   }
 
-  
   const msg = `from-client: ${id}`
   log('send', msg)
   conn.send(msg)
