@@ -4,8 +4,6 @@
   "description": "Node.js example server starter project",
   "main": "src/server.mjs",
   "scripts": {
-    "client": "echo 1",
-    "client1": "node src/client.mjs",
     "start": "concurrently 'node src/server.mjs' 'node src/client.mjs'"
   },
   "dependencies": {
