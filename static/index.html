@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<style>
+  .container {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+  #input {
+    display: block;
+  }
+</style>
+<div class="container">
+  <div class="control">
+    <input id="input" readonly />
+    <button id="btn">send</button>
+    <button id="btnClose">close</button>
+  </div>
+  <div id="chart"></div>
+</div>
+<script src="https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"></script>
+<script>
+  let i = 0;
+  input.value = i;
+  btn.onclick = () => {
+    fetch("/send?id=" + i, {
+      method: "post"
+    });
+    i += 1;
+    input.value = i;
+  };
+
+  btnClose.onclick = () => {
+    fetch("/close", {
+      method: "post"
+    });
+  };
+
+  let oldUml = "";
+  const renderUml = (events) => {
+    let uml = `
+sequenceDiagram
+participant client
+participant server
+    `;
+    uml += events
+      .map(({ type, source, data }) => {
+        const target = source === "client" ? "server" : "client";
+        const connect = type === "msg" ? "->>" : "-->>";
+        if (typeof data === "string") {
+          return `${source}${connect}${target}: ${data}`;
+        }
+        return `${source}${connect}${target}: ${JSON.stringify(data)}`;
+      })
+      .join("\n");
+
+    if (uml === oldUml) {
+      return;
+    }
+
+    oldUml = uml;
+
+    mermaid.mermaidAPI.render("preparedScheme", uml, (code) => {
+      chart.innerHTML = code;
+    });
+  };
+
+  const initUml = () => {
+    const tick = async () => {
+      const res = await fetch("/events");
+      const events = await res.json();
+
+      renderUml(events);
+
+      setTimeout(tick, 1000);
+    };
+    setTimeout(tick, 1000);
+  };
+
+  initUml();
+</script>

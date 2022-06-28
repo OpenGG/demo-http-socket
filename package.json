@@ -2,10 +2,11 @@
   "name": "node-http-server",
   "version": "1.0.0",
   "description": "Node.js example server starter project",
-  "main": "src/server.mjs",
+  "main": "src/server.js",
   "scripts": {
-    "start": "concurrently 'node src/server.mjs' 'node src/client.mjs'"
+    "start": "concurrently 'node src/server.js' 'node src/client.js'"
   },
+  "type": "module",
   "dependencies": {
     "chalk": "5.0.0",
     "concurrently": "7.0.0",
